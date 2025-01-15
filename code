@@ -1,0 +1,40 @@
+# minecraft_automation.py
+
+from mcpi.minecraft import Minecraft
+from mcpi import block
+import time
+
+class MinecraftAutomation:
+    def __init__(self):
+        # Initialize the Minecraft connection
+        self.mc = Minecraft.create()
+        self.x, self.y, self.z = self.mc.player.getTilePos()
+
+    def move_up_to_height(self, target_height):
+        """Move the player upward until they reach the target height."""
+        while self.y < target_height:
+            self.mc.player.setTilePos(self.x, self.y + 1, self.z)  # Move player up by 1 block
+            self.y += 1
+            time.sleep(0.1)  # Wait a bit before moving again
+        print(f"Player reached height {self.y}.")
+
+    def build_tower(self, height=10):
+        """Build a tower of stone blocks starting from the current position."""
+        original_y = self.y
+        for i in range(height):
+            self.mc.setBlock(self.x + 2, self.y, self.z, block.STONE)  # Place stone blocks
+            self.y += 1  # Move up for the next block
+            time.sleep(0.5)  # Wait a bit before placing the next block
+        print(f"Built a tower of height {height}.")
+
+    def post_message(self, message):
+        """Post a message in Minecraft chat."""
+        self.mc.postToChat(message)
+        print(f"Message posted: {message}")
+
+# If this script is run directly, it will execute the automation
+if __name__ == "__main__":
+    automation = MinecraftAutomation()
+    automation.move_up_to_height(100)  # Move to height 100
+    automation.build_tower()  # Build a tower
+    automation.post_message("noice")
